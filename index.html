@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L-8 · Solubility Tug-of-War | Nobel Prep AP Chemistry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1a2744;
+    --navy-soft:#2e3c5c;
+    --gold:#c9a84c;
+    --gold-soft:#e8d9ad;
+    --bg:#f7f7f5;
+    --card:#ffffff;
+    --line:#e3e1da;
+    --grey-text:#5b6478;
+    --cation:#8b96a8;
+    --cation-dark:#6b7689;
+    --anion:#3f9e8a;
+    --anion-dark:#2c7d6c;
+    --o-red:#cf4747;
+    --o-red-dark:#a23535;
+    --h-blue:#cfe7f3;
+    --h-blue-dark:#9fc7dc;
+    --correct:#3f9e6c;
+    --wrong:#c0524a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--navy);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 0 60px;}
+
+  header.top{background:var(--navy);color:#fff;padding:26px 32px 22px;}
+  header.top .inner{max-width:1080px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+  .eyebrow{font-family:'JetBrains Mono',monospace;color:var(--gold);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px;}
+  h1{margin:0;font-size:27px;font-weight:800;letter-spacing:-0.01em;}
+  .subtitle{margin:6px 0 0;font-size:14.5px;color:#c7cee0;font-weight:400;}
+  .series-tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--navy);background:var(--gold-soft);border:1px solid var(--gold);padding:5px 11px;border-radius:20px;white-space:nowrap;}
+
+  nav.tabs{display:flex;gap:6px;max-width:1080px;margin:22px auto 0;padding:0 32px;}
+  .tab-btn{font-family:'Inter',sans-serif;font-weight:600;font-size:14.5px;color:var(--grey-text);background:transparent;border:none;border-bottom:3px solid transparent;padding:11px 18px;cursor:pointer;transition:color .15s ease, border-color .15s ease;}
+  .tab-btn:hover{color:var(--navy);}
+  .tab-btn.active{color:var(--navy);border-bottom-color:var(--gold);}
+
+  main{padding:0 32px;}
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin-top:18px;box-shadow:0 1px 2px rgba(26,39,68,0.04);}
+  .card h2{margin:0 0 4px;font-size:16px;}
+  .card .card-sub{margin:0 0 16px;font-size:13px;color:var(--grey-text);}
+
+  /* ---------- segmented controls ---------- */
+  .ion-controls{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media (max-width:620px){.ion-controls{grid-template-columns:1fr;}}
+  .ion-block .ion-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;margin-bottom:14px;}
+  .ion-dot{width:13px;height:13px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,0.15);}
+  .field{margin-bottom:14px;}
+  .field:last-child{margin-bottom:0;}
+  .field-label{font-size:11.5px;color:var(--grey-text);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:block;}
+  .seg-group{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .seg-btn{font-family:'Inter',sans-serif;font-weight:600;font-size:13px;color:var(--navy-soft);background:#fff;border:none;border-right:1px solid var(--line);padding:8px 15px;cursor:pointer;transition:background .15s ease, color .15s ease;}
+  .seg-btn:last-child{border-right:none;}
+  .seg-btn:hover:not(.active){background:#f3f2ee;}
+  .seg-btn.active{background:var(--navy);color:#fff;}
+
+  /* ---------- energy bars ---------- */
+  .energy-row{display:flex;align-items:center;gap:14px;margin-bottom:13px;}
+  .energy-label{width:128px;flex:none;font-size:12.5px;font-weight:700;color:var(--navy);font-family:'JetBrains Mono',monospace;}
+  .energy-bar-track{flex:1;height:22px;background:#eeede8;border-radius:6px;overflow:hidden;}
+  .energy-bar-fill{height:100%;border-radius:6px;width:0%;transition:width .4s cubic-bezier(.22,.9,.34,1);}
+  .energy-bar-fill.lattice{background:linear-gradient(90deg,var(--navy),var(--navy-soft));}
+  .energy-bar-fill.hydration{background:linear-gradient(90deg,var(--gold),#e0c172);}
+  .energy-value{width:54px;flex:none;text-align:right;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--grey-text);}
+
+  .winner-badge{margin-top:6px;padding:13px 16px;border-radius:10px;font-size:14px;font-weight:700;text-align:center;}
+  .winner-badge.soluble{background:#eef8f1;color:#235c3f;border:1px solid var(--correct);}
+  .winner-badge.insoluble{background:#fbeeec;color:#7a2e28;border:1px solid var(--wrong);}
+  .winner-sub{margin:6px 0 0;font-size:12.5px;font-weight:400;color:var(--grey-text);text-align:center;}
+
+  .model-note{font-size:12px;color:var(--grey-text);margin-top:14px;line-height:1.6;border-top:1px dashed var(--line);padding-top:12px;}
+
+  /* ---------- test canvas ---------- */
+  .canvas-card{padding:0;overflow:hidden;}
+  .canvas-shell{position:relative;width:100%;height:340px;background:radial-gradient(circle at 30% 20%, #fbfbf9 0%, #f3f2ee 70%);}
+  canvas{display:block;width:100%;height:100%;}
+  .phase-caption{position:absolute;left:14px;top:14px;font-size:12.5px;color:var(--navy-soft);background:rgba(255,255,255,0.92);border:1px solid var(--line);padding:6px 11px;border-radius:8px;font-family:'JetBrains Mono',monospace;}
+  .result-caption{position:absolute;right:14px;top:14px;font-size:13px;font-weight:700;background:rgba(255,255,255,0.95);border:1px solid var(--line);padding:7px 13px;border-radius:8px;display:none;}
+  .result-caption.show{display:block;}
+  .result-caption.ok{color:#235c3f;border-color:var(--correct);}
+  .result-caption.no{color:#7a2e28;border-color:var(--wrong);}
+
+  .controls{display:flex;align-items:center;gap:12px;padding:16px 22px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .btn{font-family:'Inter',sans-serif;font-weight:600;font-size:13.5px;border:1px solid var(--navy);background:var(--navy);color:#fff;padding:9px 16px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:opacity .15s ease;}
+  .btn:hover{opacity:.85;}
+  .btn:disabled{opacity:.45;cursor:not-allowed;}
+  .btn.ghost{background:transparent;color:var(--navy);border-color:var(--line);}
+  .btn.ghost:hover{border-color:var(--navy);}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--navy-soft);padding:0 22px 16px;}
+  .legend .row{display:flex;align-items:center;gap:6px;}
+  .swatch{width:11px;height:11px;border-radius:50%;flex:none;display:inline-block;border:1px solid rgba(0,0,0,0.15);}
+
+  /* ---------- Challenge ---------- */
+  .quiz-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .quiz-progress{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--grey-text);}
+  .score-chip{font-family:'JetBrains Mono',monospace;font-size:12.5px;background:var(--gold-soft);border:1px solid var(--gold);color:var(--navy);padding:4px 10px;border-radius:20px;}
+  .q-text{font-size:16px;font-weight:600;margin:14px 0 16px;line-height:1.5;}
+  .q-sub{font-size:13.5px;color:var(--navy-soft);background:#f7f7f5;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:-6px 0 16px;line-height:1.65;}
+  .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media (max-width:600px){.options{grid-template-columns:1fr;}}
+  .opt-btn{text-align:left;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:var(--navy);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;transition:border-color .15s ease, background .15s ease;}
+  .opt-btn:hover{border-color:var(--gold);}
+  .opt-btn.correct{border-color:var(--correct);background:#eef8f1;color:var(--correct);}
+  .opt-btn.wrong{border-color:var(--wrong);background:#fbeeec;color:var(--wrong);}
+  .opt-btn:disabled{cursor:default;}
+  .feedback{margin-top:16px;padding:13px 16px;border-radius:10px;font-size:13.5px;line-height:1.65;display:none;}
+  .feedback.show{display:block;}
+  .feedback.ok{background:#eef8f1;border:1px solid var(--correct);color:#235c3f;}
+  .feedback.no{background:#fbeeec;border:1px solid var(--wrong);color:#7a2e28;}
+  .quiz-footer{display:flex;justify-content:flex-end;margin-top:18px;}
+  .summary{text-align:center;padding:36px 20px;}
+  .summary .big{font-family:'JetBrains Mono',monospace;font-size:42px;font-weight:700;color:var(--navy);}
+  .summary p{color:var(--grey-text);font-size:14px;margin-top:4px;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="inner">
+    <div>
+      <p class="eyebrow">Nobel Prep · AP Chemistry · Chapter 10</p>
+      <h1>Solubility Tug-of-War</h1>
+      <p class="subtitle">Lattice energy vs. hydration energy — which one wins decides if it dissolves</p>
+    </div>
+    <span class="series-tag">L-8</span>
+  </div>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="explore">Explore</button>
+  <button class="tab-btn" data-tab="challenge">Challenge</button>
+</nav>
+
+<main class="wrap">
+
+  <!-- ============ EXPLORE PANEL ============ -->
+  <section class="panel active" id="panel-explore">
+
+    <div class="card">
+      <strong>Solubility of an ionic compound is a tug-of-war between two attractions:</strong>
+      ① how strongly the ions pull on <em>each other</em> (lattice energy), and ② how strongly water
+      pulls on <em>each ion</em> (hydration energy). Whichever side is stronger decides the outcome —
+      bigger lattice energy means <strong>insoluble</strong>, bigger hydration energy means
+      <strong>soluble</strong>.
+    </div>
+
+    <div class="card">
+      <h2>Set the ions</h2>
+      <p class="card-sub">Charge and ionic radius are the two levers that control both energies.</p>
+      <div class="ion-controls">
+        <div class="ion-block">
+          <div class="ion-title"><span class="ion-dot" style="background:var(--cation)"></span>Cation</div>
+          <div class="field">
+            <span class="field-label">Charge</span>
+            <div class="seg-group" data-group="cationCharge">
+              <button class="seg-btn active" data-value="1">1+</button>
+              <button class="seg-btn" data-value="2">2+</button>
+              <button class="seg-btn" data-value="3">3+</button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">Ionic radius</span>
+            <div class="seg-group" data-group="cationSize">
+              <button class="seg-btn" data-value="small">Small</button>
+              <button class="seg-btn active" data-value="medium">Medium</button>
+              <button class="seg-btn" data-value="large">Large</button>
+            </div>
+          </div>
+        </div>
+        <div class="ion-block">
+          <div class="ion-title"><span class="ion-dot" style="background:var(--anion)"></span>Anion</div>
+          <div class="field">
+            <span class="field-label">Charge</span>
+            <div class="seg-group" data-group="anionCharge">
+              <button class="seg-btn active" data-value="1">1&minus;</button>
+              <button class="seg-btn" data-value="2">2&minus;</button>
+            </div>
+          </div>
+          <div class="field">
+            <span class="field-label">Ionic radius</span>
+            <div class="seg-group" data-group="anionSize">
+              <button class="seg-btn" data-value="small">Small</button>
+              <button class="seg-btn active" data-value="medium">Medium</button>
+              <button class="seg-btn" data-value="large">Large</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>The tug-of-war</h2>
+      <p class="card-sub">Relative attraction strength (simplified model — not actual kJ/mol values).</p>
+      <div class="energy-row">
+        <span class="energy-label">LATTICE</span>
+        <div class="energy-bar-track"><div class="energy-bar-fill lattice" id="latticeBar"></div></div>
+        <span class="energy-value" id="latticeVal">0</span>
+      </div>
+      <div class="energy-row">
+        <span class="energy-label">HYDRATION</span>
+        <div class="energy-bar-track"><div class="energy-bar-fill hydration" id="hydrationBar"></div></div>
+        <span class="energy-value" id="hydrationVal">0</span>
+      </div>
+      <div class="winner-badge" id="winnerBadge">—</div>
+      <p class="winner-sub" id="winnerSub"></p>
+      <p class="model-note">This model scales lattice energy with (q&#8314;&times;q&#8315;) &divide; (r&#8314;+r&#8315;)
+        and hydration energy with q&#8314;&sup2;/r&#8314; + q&#8315;&sup2;/r&#8315; — the same charge and
+        size dependence used in Coulomb's law and the Born equation. Real compounds can deviate from this
+        prediction when bonding has significant covalent character (see the Challenge tab).</p>
+    </div>
+
+    <div class="card canvas-card">
+      <div class="canvas-shell">
+        <canvas id="tugCanvas"></canvas>
+        <div class="phase-caption" id="phaseCaption">Ready to test</div>
+        <div class="result-caption" id="resultCaption"></div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="testBtn">▶ Test Dissolution</button>
+        <button class="btn ghost" id="tugResetBtn">⟲ Reset</button>
+      </div>
+      <div class="legend">
+        <div class="row"><span class="swatch" style="background:var(--cation)"></span> Cation</div>
+        <div class="row"><span class="swatch" style="background:var(--anion)"></span> Anion</div>
+        <div class="row"><span class="swatch" style="background:var(--o-red)"></span> O (δ&#8315;)</div>
+        <div class="row"><span class="swatch" style="background:var(--h-blue);border-color:#9fc7dc;"></span> H (δ&#8314;)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CHALLENGE PANEL ============ -->
+  <section class="panel" id="panel-challenge">
+    <div class="card">
+      <div class="quiz-top">
+        <span class="quiz-progress" id="quizProgress">Question 1 / 5</span>
+        <span class="score-chip" id="scoreChip">Score: 0 / 0</span>
+      </div>
+      <div id="quizBody">
+        <p class="q-text" id="qText"></p>
+        <div class="q-sub" id="qSub" style="display:none;"></div>
+        <div class="options" id="qOptions"></div>
+        <div class="feedback" id="qFeedback"></div>
+        <div class="quiz-footer"><button class="btn" id="nextBtn" style="display:none;">Next →</button></div>
+      </div>
+      <div id="quizSummary" class="summary" style="display:none;">
+        <div class="big" id="summaryScore">0 / 5</div>
+        <p>Final score</p>
+        <button class="btn ghost" id="retryBtn" style="margin-top:14px;">↻ Try again</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* =========================================================================
+   shared drawing helpers (ion / water molecule rendering)
+   ========================================================================= */
+
+function drawDelta(ctx, x, y, sign, color){
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = "600 11px 'JetBrains Mono', monospace";
+  ctx.fillText('\u03B4', x, y);
+  ctx.font = "600 8px 'JetBrains Mono', monospace";
+  const w = ctx.measureText('\u03B4').width;
+  ctx.fillText(sign, x + w*0.62 + 4, y - 5);
+  ctx.restore();
+}
+function rot(px, py, ang){
+  const c = Math.cos(ang), s = Math.sin(ang);
+  return { x: px*c - py*s, y: px*s + py*c };
+}
+function waterAtomsLocal(bond){
+  const half = (104.5/2) * Math.PI/180;
+  const Hx =  Math.cos(half)*bond, Hy = Math.sin(half)*bond;
+  return { O:{x:0,y:0}, H1:{x:Hx,y:Hy}, H2:{x:Hx,y:-Hy} };
+}
+function waterAtomsWorld(anchor, dirAngle, facing, bond){
+  const local = waterAtomsLocal(bond);
+  const rotAngle = (facing === 'O') ? dirAngle : (dirAngle - Math.PI);
+  const O  = rot(local.O.x,  local.O.y,  rotAngle);
+  const H1 = rot(local.H1.x, local.H1.y, rotAngle);
+  const H2 = rot(local.H2.x, local.H2.y, rotAngle);
+  return {
+    O:  {x:anchor.x+O.x,  y:anchor.y+O.y},
+    H1: {x:anchor.x+H1.x, y:anchor.y+H1.y},
+    H2: {x:anchor.x+H2.x, y:anchor.y+H2.y}
+  };
+}
+let cssCache = {};
+function getCss(varName){
+  if(cssCache[varName]) return cssCache[varName];
+  const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  cssCache[varName] = v;
+  return v;
+}
+function drawWaterMolecule(ctx, anchor, dirAngle, facing, opts){
+  opts = opts || {};
+  const bond = opts.bond || 11, oR = opts.oR || 6.2, hR = opts.hR || 4.0;
+  const atoms = waterAtomsWorld(anchor, dirAngle, facing, bond);
+  ctx.save();
+  ctx.globalAlpha = opts.alpha != null ? opts.alpha : 1;
+  ctx.strokeStyle = 'rgba(26,39,68,0.18)';
+  ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  ctx.moveTo(atoms.O.x, atoms.O.y); ctx.lineTo(atoms.H1.x, atoms.H1.y);
+  ctx.moveTo(atoms.O.x, atoms.O.y); ctx.lineTo(atoms.H2.x, atoms.H2.y);
+  ctx.stroke();
+  [atoms.H1, atoms.H2].forEach(h=>{
+    ctx.beginPath();
+    ctx.fillStyle = getCss('--h-blue'); ctx.strokeStyle = getCss('--h-blue-dark'); ctx.lineWidth = 1;
+    ctx.arc(h.x, h.y, hR, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  });
+  ctx.beginPath();
+  ctx.fillStyle = getCss('--o-red'); ctx.strokeStyle = getCss('--o-red-dark'); ctx.lineWidth = 1;
+  ctx.arc(atoms.O.x, atoms.O.y, oR, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  if(opts.labeled){
+    const perpX = -Math.sin(dirAngle), perpY = Math.cos(dirAngle);
+    const oLabelPos = { x: atoms.O.x + perpX*12, y: atoms.O.y + perpY*12 };
+    drawDelta(ctx, oLabelPos.x, oLabelPos.y, '\u2212', getCss('--o-red-dark'));
+    [atoms.H1, atoms.H2].forEach(h=>{
+      const hx = h.x + (h.x-atoms.O.x)*0.55, hy = h.y + (h.y-atoms.O.y)*0.55;
+      drawDelta(ctx, hx, hy, '+', getCss('--h-blue-dark'));
+    });
+  }
+  ctx.restore();
+}
+function drawIon(ctx, x, y, charge, r, opts){
+  opts = opts || {};
+  ctx.save();
+  ctx.globalAlpha = opts.alpha != null ? opts.alpha : 1;
+  const grad = ctx.createRadialGradient(x-r*0.35, y-r*0.35, r*0.15, x, y, r);
+  if(charge > 0){ grad.addColorStop(0, '#c4cad4'); grad.addColorStop(1, getCss('--cation-dark')); }
+  else { grad.addColorStop(0, '#7fd1bd'); grad.addColorStop(1, getCss('--anion-dark')); }
+  ctx.beginPath(); ctx.fillStyle = grad; ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+  if(opts.ring){ ctx.lineWidth = 2.5; ctx.strokeStyle = getCss('--gold'); ctx.stroke(); }
+  ctx.fillStyle = 'rgba(26,39,68,0.85)';
+  ctx.font = `700 ${Math.round(r*0.85)}px 'Inter', sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const label = Math.abs(charge)>1 ? (Math.abs(charge)+(charge>0?'+':'\u2212')) : (charge>0?'+':'\u2212');
+  ctx.fillText(label, x, y+0.5);
+  ctx.restore();
+}
+function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
+function easeOutBack(t){ const c1=1.25, c3=c1+1; return 1 + c3*Math.pow(t-1,3) + c1*Math.pow(t-1,2); }
+function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
+function lerp(a,b,t){ return a + (b-a)*t; }
+
+/* =========================================================================
+   ENERGY MODEL
+   ========================================================================= */
+const SIZE_VAL  = { small:0.7, medium:1.0, large:1.4 };
+const SIZE_PX   = { small:11,  medium:14,  large:18  };
+const K_LATTICE = 140, K_HYDRATION = 60, CHARGE_EXP = 1.6;
+const BAR_CAP   = 1800;
+
+let state = {
+  cationCharge: 1, cationSize: 'medium',
+  anionCharge: 1,  anionSize: 'medium'
+};
+
+function computeEnergies(s){
+  const qC = s.cationCharge, qA = s.anionCharge;
+  const rC = SIZE_VAL[s.cationSize], rA = SIZE_VAL[s.anionSize];
+  const lattice   = K_LATTICE * Math.pow(qC*qA, CHARGE_EXP) / (rC+rA);
+  const hydration = K_HYDRATION * ( (qC*qC)/rC + (qA*qA)/rA );
+  return { lattice, hydration, soluble: hydration > lattice };
+}
+
+function updateEnergyUI(){
+  const e = computeEnergies(state);
+  const lp = clamp(e.lattice/BAR_CAP*100, 2, 100);
+  const hp = clamp(e.hydration/BAR_CAP*100, 2, 100);
+  document.getElementById('latticeBar').style.width = lp+'%';
+  document.getElementById('hydrationBar').style.width = hp+'%';
+  document.getElementById('latticeVal').textContent = Math.round(e.lattice);
+  document.getElementById('hydrationVal').textContent = Math.round(e.hydration);
+
+  const badge = document.getElementById('winnerBadge');
+  const sub = document.getElementById('winnerSub');
+  badge.classList.remove('soluble','insoluble');
+  if(e.soluble){
+    badge.classList.add('soluble');
+    badge.textContent = '💧 Hydration wins → Predicted: Soluble';
+    sub.textContent = 'Water\u2019s pull on the ions is stronger than the ions\u2019 pull on each other.';
+  } else {
+    badge.classList.add('insoluble');
+    badge.textContent = '🧊 Lattice wins → Predicted: Insoluble';
+    sub.textContent = 'The ions hold onto each other more strongly than water can pull them apart.';
+  }
+  return e;
+}
+
+/* =========================================================================
+   SEGMENTED CONTROLS
+   ========================================================================= */
+document.querySelectorAll('.seg-group').forEach(group=>{
+  const key = group.dataset.group;
+  group.querySelectorAll('.seg-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      group.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const raw = btn.dataset.value;
+      state[key] = (raw === 'small' || raw === 'medium' || raw === 'large') ? raw : parseInt(raw,10);
+      updateEnergyUI();
+      resetPair();
+    });
+  });
+});
+
+/* =========================================================================
+   PAIR DISSOLUTION TEST (canvas)
+   ========================================================================= */
+let tugCanvas, tugCtx, tugDpr=1;
+let pair = null;
+let playT = 0, playing = false, outcome = null, lastTugTs = null, tugRaf = null;
+
+function buildPair(){
+  const w = tugCanvas.clientWidth, h = tugCanvas.clientHeight;
+  const cR = SIZE_PX[state.cationSize], aR = SIZE_PX[state.anionSize];
+  const sep = cR + aR + 24;
+  const cx = w/2, cy = h*0.56;
+
+  const cation = {
+    charge: state.cationCharge, r: cR,
+    startX: cx - sep/2, startY: cy, x: cx - sep/2, y: cy,
+    targetX: cx - Math.min(w,h)*0.34, targetY: cy - Math.min(w,h)*0.10,
+    waters: []
+  };
+  const anion = {
+    charge: -state.anionCharge, r: aR,
+    startX: cx + sep/2, startY: cy, x: cx + sep/2, y: cy,
+    targetX: cx + Math.min(w,h)*0.34, targetY: cy + Math.min(w,h)*0.10,
+    waters: []
+  };
+  [140,220].forEach(deg=>{
+    const ang = deg*Math.PI/180;
+    const d = cation.r + 75;
+    cation.waters.push({ angle:ang, spawnX:cation.startX+Math.cos(ang)*d, spawnY:cation.startY+Math.sin(ang)*d });
+  });
+  [-40,40].forEach(deg=>{
+    const ang = deg*Math.PI/180;
+    const d = anion.r + 75;
+    anion.waters.push({ angle:ang, spawnX:anion.startX+Math.cos(ang)*d, spawnY:anion.startY+Math.sin(ang)*d });
+  });
+  pair = { cation, anion };
+}
+
+function resetPair(){
+  playing = false; playT = 0; outcome = null;
+  document.getElementById('testBtn').disabled = false;
+  document.getElementById('phaseCaption').textContent = 'Ready to test';
+  const rc = document.getElementById('resultCaption');
+  rc.classList.remove('show','ok','no');
+  buildPair();
+}
+
+function resizeTugCanvas(){
+  tugDpr = window.devicePixelRatio || 1;
+  const rect = tugCanvas.getBoundingClientRect();
+  tugCanvas.width = Math.round(rect.width*tugDpr);
+  tugCanvas.height = Math.round(rect.height*tugDpr);
+  tugCtx.setTransform(tugDpr,0,0,tugDpr,0,0);
+  buildPair();
+  drawTug();
+}
+
+const APPROACH_END = 0.34, TUG_END = 0.60;
+
+function drawIonWithShell(ctx, ion, facing, nowMs, seed){
+  // approach: waters swim from spawn to attached anchor position
+  const approachT = easeOutCubic(clamp(playT/APPROACH_END, 0, 1));
+  // tug: jitter envelope while bonded
+  const tugEnvelope = (playT > APPROACH_END && playT < TUG_END)
+    ? Math.sin(((playT-APPROACH_END)/(TUG_END-APPROACH_END)) * Math.PI) : 0;
+  // breakaway
+  const moveRaw = (playT >= TUG_END) ? clamp((playT-TUG_END)/(1-TUG_END), 0, 1) : 0;
+
+  let jx=0, jy=0;
+  if(tugEnvelope > 0.001){
+    const freq=0.022, ph=seed*1.6;
+    jx = Math.sin(nowMs*freq+ph) * 4 * tugEnvelope;
+    jy = Math.cos(nowMs*freq*1.3+ph) * 2.6 * tugEnvelope;
+  }
+
+  let ix, iy, shellAlpha, shellDrift = 0;
+  if(outcome && outcome.soluble){
+    const moveT = easeOutBack(moveRaw);
+    ix = lerp(ion.startX, ion.targetX, moveT) + jx;
+    iy = lerp(ion.startY, ion.targetY, moveT) + jy;
+    shellAlpha = approachT;
+  } else {
+    ix = ion.startX + jx; iy = ion.startY + jy;
+    shellAlpha = approachT * (1 - moveRaw);
+    shellDrift = moveRaw * 26;
+  }
+  ion.x = ix; ion.y = iy;
+
+  if(shellAlpha > 0.01){
+    ion.waters.forEach(wm=>{
+      const anchorX = ion.x + Math.cos(wm.angle)*(ion.r+13+shellDrift);
+      const anchorY = ion.y + Math.sin(wm.angle)*(ion.r+13+shellDrift);
+      const px = lerp(wm.spawnX, anchorX, approachT);
+      const py = lerp(wm.spawnY, anchorY, approachT);
+      drawWaterMolecule(ctx, {x:px,y:py}, wm.angle, facing, {
+        alpha: shellAlpha, bond:9, oR:5.2, hR:3.4, labeled: shellAlpha>0.55
+      });
+    });
+  }
+  return { tugEnvelope, moveRaw };
+}
+
+function updatePhaseCaption(cState, aState){
+  const cap = document.getElementById('phaseCaption');
+  if(!playing && playT===0){ cap.textContent = 'Ready to test'; return; }
+  if(playT < APPROACH_END) cap.textContent = 'Water approaching & attaching...';
+  else if(playT < TUG_END) cap.textContent = 'Attached water tugging on the lattice bond...';
+  else if(playT < 1){
+    cap.textContent = (outcome && outcome.soluble) ? 'Bond snapping — ion pulling free...' : 'Bond holding — water letting go...';
+  } else {
+    cap.textContent = (outcome && outcome.soluble) ? 'Dissolved.' : 'Stayed undissolved.';
+  }
+}
+
+function drawTug(){
+  const w = tugCanvas.clientWidth, h = tugCanvas.clientHeight;
+  const ctx = tugCtx;
+  ctx.clearRect(0,0,w,h);
+  if(!pair) return;
+  const now = performance.now();
+
+  // lattice bond line between the two ions, fading with tug/break progress
+  const cFacing = 'O', aFacing = 'H';
+  const r1 = drawIonWithShell(ctx, pair.cation, cFacing, now, 1);
+  const r2 = drawIonWithShell(ctx, pair.anion,  aFacing, now, 2);
+
+  const weaken = Math.max(r1.tugEnvelope, r2.tugEnvelope, (outcome&&outcome.soluble)?Math.max(r1.moveRaw,r2.moveRaw):0);
+  const bondAlpha = clamp(1 - weaken*1.25, 0, 1) * 0.45;
+  if(bondAlpha > 0.01){
+    ctx.save();
+    ctx.globalAlpha = bondAlpha;
+    ctx.setLineDash([4,4]);
+    ctx.strokeStyle = getCss('--navy-soft');
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(pair.cation.x, pair.cation.y);
+    ctx.lineTo(pair.anion.x, pair.anion.y);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawIon(ctx, pair.cation.x, pair.cation.y, pair.cation.charge, pair.cation.r, {});
+  drawIon(ctx, pair.anion.x,  pair.anion.y,  pair.anion.charge,  pair.anion.r,  {});
+
+  updatePhaseCaption();
+}
+
+function tugLoop(ts){
+  if(lastTugTs == null) lastTugTs = ts;
+  const dt = ts - lastTugTs;
+  lastTugTs = ts;
+  if(playing){
+    playT = clamp(playT + dt*0.00032, 0, 1);
+    if(playT >= 1){
+      playing = false;
+      document.getElementById('testBtn').disabled = false;
+      const rc = document.getElementById('resultCaption');
+      rc.classList.add('show', outcome.soluble ? 'ok' : 'no');
+      rc.textContent = outcome.soluble ? '\u2713 Dissolved \u2014 hydration won' : '\u2717 Stayed insoluble \u2014 lattice won';
+    }
+  }
+  drawTug();
+  tugRaf = requestAnimationFrame(tugLoop);
+}
+
+document.getElementById('testBtn').addEventListener('click', ()=>{
+  outcome = computeEnergies(state);
+  playing = true; playT = 0;
+  document.getElementById('testBtn').disabled = true;
+  document.getElementById('resultCaption').classList.remove('show','ok','no');
+});
+document.getElementById('tugResetBtn').addEventListener('click', resetPair);
+
+function initTug(){
+  tugCanvas = document.getElementById('tugCanvas');
+  tugCtx = tugCanvas.getContext('2d');
+  new ResizeObserver(resizeTugCanvas).observe(tugCanvas);
+  resizeTugCanvas();
+  updateEnergyUI();
+  tugRaf = requestAnimationFrame(tugLoop);
+}
+
+/* =========================================================================
+   TABS
+   ========================================================================= */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* =========================================================================
+   CHALLENGE TAB
+   ========================================================================= */
+function buildQuizBank(){
+  const bank = [];
+
+  bank.push({
+    type:'static',
+    q:'Which relationship best describes ionic solubility in water?',
+    options:[
+      'Soluble when hydration energy is greater than lattice energy',
+      'Soluble when lattice energy is greater than hydration energy',
+      'Solubility depends only on lattice energy',
+      'Solubility depends only on the ions\u2019 color'
+    ],
+    correct:0,
+    explain:'Dissolution happens when the energy released by hydrating the ions outweighs the energy needed to break apart the lattice.'
+  });
+
+  bank.push({
+    type:'static',
+    q:'If lattice energy is much LARGER than hydration energy, the compound is most likely\u2026',
+    options:['Soluble','Insoluble','A gas at room temperature','Always covalent'],
+    correct:1,
+    explain:'A strong lattice energy means the ions hold tightly to each other, so water cannot pull them apart \u2014 the compound stays insoluble.'
+  });
+
+  bank.push({
+    type:'static',
+    q:'If hydration energy is much LARGER than lattice energy, the compound is most likely\u2026',
+    options:['Insoluble','Soluble','Radioactive','Nonpolar'],
+    correct:1,
+    explain:'Strong ion\u2013dipole attraction to water releases more energy than it costs to break the lattice, so the solid dissolves.'
+  });
+
+  bank.push({
+    type:'static',
+    q:'Compound A has small, highly charged ions (3+/2\u2212). Compound B has the same charges but much larger ions. Which is more likely to be insoluble?',
+    options:[
+      'Compound A (smaller ions)',
+      'Compound B (larger ions)',
+      'Both are equally soluble',
+      'Charge size doesn\u2019t affect solubility'
+    ],
+    correct:0,
+    explain:'Smaller ions can get closer together, so the electrostatic attraction (and lattice energy) is stronger \u2014 1/(r\u208a+r\u208b) grows as the ions shrink.'
+  });
+
+  bank.push({
+    type:'static',
+    q:'AgCl has the same charges as NaCl (1+/1\u2212) and similar ionic size, yet NaCl is soluble while AgCl is essentially insoluble. What does this tell us about the simple charge/size model?',
+    options:[
+      'The model is completely wrong and should be ignored',
+      'AgCl must have a measurement error',
+      'Real bonding can have covalent character that the simple ionic model doesn\u2019t capture',
+      'Silver is not actually an ion'
+    ],
+    correct:2,
+    explain:'Ag\u207a strongly polarizes the electron cloud of Cl\u207b, giving the Ag\u2013Cl bond significant covalent character. The pure point-charge model used here doesn\u2019t account for that, which is why real solubility tables sometimes disagree with simple charge/size predictions.'
+  });
+
+  bank.push({ type:'predict' });
+  bank.push({ type:'predict' });
+
+  for(let i=bank.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [bank[i],bank[j]] = [bank[j],bank[i]];
+  }
+  return bank.slice(0,5);
+}
+
+let quizBank = [], quizIndex = 0, quizScore = 0, quizAnswered = false;
+
+function loadQuestion(){
+  const fb = document.getElementById('qFeedback');
+  fb.classList.remove('show','ok','no');
+  document.getElementById('nextBtn').style.display = 'none';
+  quizAnswered = false;
+
+  const item = quizBank[quizIndex];
+  document.getElementById('quizProgress').textContent = `Question ${quizIndex+1} / ${quizBank.length}`;
+  document.getElementById('scoreChip').textContent = `Score: ${quizScore} / ${quizIndex}`;
+
+  const optWrap = document.getElementById('qOptions');
+  optWrap.innerHTML = '';
+  const qSub = document.getElementById('qSub');
+  qSub.style.display = 'none';
+
+  if(item.type === 'static'){
+    document.getElementById('qText').textContent = item.q;
+    item.options.forEach((opt, idx)=>{
+      const b = document.createElement('button');
+      b.className = 'opt-btn'; b.textContent = opt;
+      b.addEventListener('click', ()=> handleAnswer(idx === item.correct, b, item.explain));
+      optWrap.appendChild(b);
+    });
+  } else if(item.type === 'predict'){
+    const qC = 1 + Math.floor(Math.random()*3);
+    const qA = 1 + Math.floor(Math.random()*2);
+    const sizes = ['small','medium','large'];
+    const sC = sizes[Math.floor(Math.random()*3)];
+    const sA = sizes[Math.floor(Math.random()*3)];
+    const e = computeEnergies({ cationCharge:qC, cationSize:sC, anionCharge:qA, anionSize:sA });
+
+    document.getElementById('qText').textContent = 'Predict the outcome for this pair:';
+    qSub.style.display = 'block';
+    qSub.innerHTML = `<b>Cation:</b> ${qC}+ charge, ${sC} radius &nbsp;&middot;&nbsp; <b>Anion:</b> ${qA}&minus; charge, ${sA} radius`;
+
+    const explain = `Lattice \u2248 ${Math.round(e.lattice)} (relative), Hydration \u2248 ${Math.round(e.hydration)} (relative). `
+      + (e.soluble ? 'Hydration energy wins, so this pair dissolves.' : 'Lattice energy wins, so this pair stays undissolved.');
+
+    const solBtn = document.createElement('button');
+    solBtn.className = 'opt-btn'; solBtn.textContent = 'Soluble (hydration wins)';
+    solBtn.addEventListener('click', ()=> handleAnswer(e.soluble === true, solBtn, explain));
+
+    const insolBtn = document.createElement('button');
+    insolBtn.className = 'opt-btn'; insolBtn.textContent = 'Insoluble (lattice wins)';
+    insolBtn.addEventListener('click', ()=> handleAnswer(e.soluble === false, insolBtn, explain));
+
+    optWrap.appendChild(solBtn);
+    optWrap.appendChild(insolBtn);
+  }
+}
+
+function handleAnswer(isCorrect, clickedBtn, explainText){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  if(isCorrect) quizScore++;
+  document.querySelectorAll('#qOptions .opt-btn').forEach(b=> b.disabled = true);
+  clickedBtn.classList.add(isCorrect ? 'correct' : 'wrong');
+  const fb = document.getElementById('qFeedback');
+  fb.classList.add('show', isCorrect ? 'ok' : 'no');
+  fb.textContent = (isCorrect ? '✓ Correct. ' : '✗ Not quite. ') + explainText;
+  document.getElementById('scoreChip').textContent = `Score: ${quizScore} / ${quizIndex+1}`;
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+}
+
+function nextQuestion(){
+  quizIndex++;
+  if(quizIndex >= quizBank.length) showSummary(); else loadQuestion();
+}
+function showSummary(){
+  document.getElementById('quizBody').style.display = 'none';
+  document.getElementById('quizSummary').style.display = 'block';
+  document.getElementById('summaryScore').textContent = `${quizScore} / ${quizBank.length}`;
+}
+function startQuiz(){
+  quizBank = buildQuizBank();
+  quizIndex = 0; quizScore = 0;
+  document.getElementById('quizBody').style.display = 'block';
+  document.getElementById('quizSummary').style.display = 'none';
+  loadQuestion();
+}
+document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+document.getElementById('retryBtn').addEventListener('click', startQuiz);
+
+/* ---------------- init ---------------- */
+initTug();
+startQuiz();
+</script>
+</body>
+</html>
